@@ -83,3 +83,24 @@ anchor deploy
 anchor run test
 ```
 
+## 坑&理解
+
+结果：
+
+![image-20240124150027322](README/image-20240124150027322.png)
+
+但是可以看到，我们`anchor deploy`的时候部署了300+的交易：
+
+![image-20240124150241780](README/image-20240124150241780.png)
+
+大部分交易都是这个：
+
+![image-20240124150419174](README/image-20240124150419174.png)
+
+为什么部署一个NFT需要这么多交易呢？[原因](https://docs.solana.com/developing/on-chain-programs/deploying)如下：
+
+![image-20240124150450424](README/image-20240124150450424.png)
+
+Solana限制Program大小，然后部署的这个NFT会被分成多个TX，分片的写入链上，因此非常多比交易。（我觉得Solana这么设计非常不好，这么多交易，到后期用户很难分辨和分类出来哪些交易是干嘛用的）
+
+非常多的tx都是这个内容，其中Bytes (Base 64)的内容不一样，也就是说每次都向链上写不同的内容，最终300+笔交易，合成了最终的NFT program
